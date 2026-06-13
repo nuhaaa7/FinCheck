@@ -225,6 +225,8 @@ analyze = st.button("🚀 Analyze")
 
 # ---------------- RESULTS ----------------
 
+# ---------------- RESULTS ----------------
+
 if analyze:
 
     features = [[
@@ -243,15 +245,34 @@ if analyze:
 
     surplus = income - expenses
 
+    remaining_amount = max(
+        0,
+        goal_cost - savings
+    )
+
     if surplus > 0:
-        months = max(
-            0,
-            (goal_cost - savings) / surplus
+
+        days_needed = (
+            remaining_amount / surplus
+        ) * 30
+
+        daily_saving_needed = (
+            remaining_amount /
+            max(days_needed, 1)
         )
+
+        weekly_saving_needed = (
+            daily_saving_needed * 7
+        )
+
     else:
-        months = -1
+
+        days_needed = -1
+        daily_saving_needed = 0
+        weekly_saving_needed = 0
 
     if income > 0:
+
         score = int(
             max(
                 0,
@@ -261,7 +282,9 @@ if analyze:
                 )
             )
         )
+
     else:
+
         score = 0
 
     st.markdown("---")
@@ -270,29 +293,51 @@ if analyze:
 
     with c1:
         st.metric(
-            "Health Score",
+            "💚 Health Score",
             f"{score}/100"
         )
 
     with c2:
         st.metric(
-            "Success Chance",
+            "🎯 Success Chance",
             f"{probability:.1f}%"
         )
 
     with c3:
-        if months >= 0:
+        if days_needed >= 0:
             st.metric(
-                "Months Needed",
-                f"{months:.1f}"
+                "📅 Days Needed",
+                f"{days_needed:.0f}"
             )
         else:
             st.metric(
-                "Months Needed",
+                "📅 Days Needed",
                 "∞"
             )
 
-    st.markdown("### Dream Progress")
+    st.markdown("### 💰 Savings Plan")
+
+    c4, c5, c6 = st.columns(3)
+
+    with c4:
+        st.metric(
+            "Daily Target",
+            f"₹{daily_saving_needed:.0f}"
+        )
+
+    with c5:
+        st.metric(
+            "Weekly Target",
+            f"₹{weekly_saving_needed:.0f}"
+        )
+
+    with c6:
+        st.metric(
+            "Remaining Amount",
+            f"₹{remaining_amount:,.0f}"
+        )
+
+    st.markdown("### 📈 Dream Progress")
 
     progress = (
         savings /
@@ -324,7 +369,21 @@ if analyze:
             f"⚠️ Achieving {goal_name} may be difficult right now"
         )
 
-    st.markdown("### AI Recommendation")
+    st.markdown("### 🤖 AI Recommendation")
+
+    st.info(
+        f"""
+To achieve {goal_name}:
+
+• Save approximately ₹{daily_saving_needed:.0f} per day
+
+• Save approximately ₹{weekly_saving_needed:.0f} per week
+
+• Remaining amount needed: ₹{remaining_amount:,.0f}
+
+• Estimated completion time: {days_needed:.0f} days
+"""
+    )
 
     if probability >= 80:
 

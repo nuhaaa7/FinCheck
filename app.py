@@ -1,300 +1,309 @@
 import streamlit as st
 import joblib
 
-# ---------------- PAGE CONFIG ----------------
+# ---------------- CONFIG ----------------
+
 st.set_page_config(
     page_title="FinCheck AI",
     page_icon="💰",
     layout="centered"
 )
 
-# ---------------- LOAD MODEL ----------------
 model = joblib.load("model.pkl")
 
-# ---------------- CUSTOM CSS ----------------
+# ---------------- CSS ----------------
+
 st.markdown("""
 <style>
 
-/* White Background */
 .stApp{
     background:white;
+    color:black;
 }
 
-/* Center Layout */
-.block-container{
-    max-width:900px;
-    text-align:center;
+*{
+    color:black !important;
 }
 
-/* Title */
 .main-title{
-    font-size:4rem;
+    font-size:3.5rem;
     font-weight:900;
-    color:#16a34a;
-    margin-bottom:0px;
+    text-align:center;
+    color:#16a34a !important;
 }
 
 .subtitle{
-    font-size:1.2rem;
-    color:#666;
-    margin-bottom:30px;
-}
-
-/* Floating Money */
-.money{
-    position:fixed;
-    font-size:35px;
-    z-index:999;
-    pointer-events:none;
-    animation-name:floatMoney;
-    animation-timing-function:linear;
-    animation-iteration-count:infinite;
-}
-
-.m1{
-    left:5%;
-    animation-duration:12s;
-}
-
-.m2{
-    left:20%;
-    animation-duration:18s;
-}
-
-.m3{
-    left:40%;
-    animation-duration:15s;
-}
-
-.m4{
-    left:65%;
-    animation-duration:20s;
-}
-
-.m5{
-    left:85%;
-    animation-duration:14s;
-}
-
-@keyframes floatMoney{
-    from{
-        top:110%;
-        transform:rotate(0deg);
-    }
-    to{
-        top:-20%;
-        transform:rotate(360deg);
-    }
-}
-
-/* Card */
-.card{
-    background:#f8f8f8;
-    padding:20px;
-    border-radius:20px;
-    box-shadow:0px 5px 15px rgba(0,0,0,0.1);
-}
-
-/* Hide Streamlit Footer */
-footer{
-    visibility:hidden;
+    text-align:center;
+    font-size:1.1rem;
+    margin-bottom:20px;
 }
 
 </style>
-
-<div class="money m1">💸</div>
-<div class="money m2">💵</div>
-<div class="money m3">💰</div>
-<div class="money m4">💸</div>
-<div class="money m5">💵</div>
-
 """, unsafe_allow_html=True)
 
 # ---------------- HEADER ----------------
 
-st.markdown(
-"""
+st.markdown("""
 <div class="main-title">
 💰 FinCheck AI
 </div>
+
 <div class="subtitle">
-Turn Dreams Into Plans
+Track Finances • Build Dreams
 </div>
-""",
-unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
-st.markdown("---")
+# ---------------- SIDEBAR ----------------
 
-# ---------------- INPUTS ----------------
-
-income = st.number_input(
-    "💵 Monthly Income (₹)",
-    min_value=0
-)
-
-expenses = st.number_input(
-    "💸 Monthly Expenses (₹)",
-    min_value=0
-)
-
-savings = st.number_input(
-    "🏦 Current Savings (₹)",
-    min_value=0
-)
-
-goal_name = st.selectbox(
-    "🎯 Select Your Dream",
+page = st.sidebar.radio(
+    "Navigation",
     [
-        "🎸 Guitar",
-        "💻 Laptop",
-        "🏍️ Bike",
-        "✈️ Vacation",
-        "📱 Phone",
-        "🏠 House",
-        "🚗 Car"
+        "📊 Financial Health",
+        "🎯 Dream Vault"
     ]
 )
 
-goal_cost = st.number_input(
-    "💰 Goal Cost (₹)",
-    min_value=0
-)
+# ==================================================
+# FINANCIAL HEALTH PAGE
+# ==================================================
 
-st.write("")
+if page == "📊 Financial Health":
 
-# Center Button
-col1, col2, col3 = st.columns([1,1,1])
+    st.header("📊 Financial Dashboard")
 
-with col2:
-    analyze = st.button("🚀 Analyze")
+    st.subheader("💵 Income Sources")
 
-# ---------------- ANALYSIS ----------------
-
-if analyze:
-
-    features = [[
-        income,
-        expenses,
-        savings,
-        goal_cost
-    ]]
-
-    prediction = model.predict(features)[0]
-
-    probability = (
-        model.predict_proba(features)[0][1]
-        * 100
+    salary = st.number_input(
+        "Salary",
+        min_value=0
     )
 
-    surplus = income - expenses
+    freelance = st.number_input(
+        "Freelancing",
+        min_value=0
+    )
 
-    if surplus > 0:
-        months = max(
-            0,
-            (goal_cost - savings) / surplus
+    other_income = st.number_input(
+        "Other Income",
+        min_value=0
+    )
+
+    total_income = (
+        salary +
+        freelance +
+        other_income
+    )
+
+    st.success(
+        f"Total Income: ₹{total_income}"
+    )
+
+    st.subheader("💸 Expense Sources")
+
+    food = st.number_input(
+        "Food",
+        min_value=0
+    )
+
+    transport = st.number_input(
+        "Transport",
+        min_value=0
+    )
+
+    entertainment = st.number_input(
+        "Entertainment",
+        min_value=0
+    )
+
+    education = st.number_input(
+        "Education",
+        min_value=0
+    )
+
+    other_expenses = st.number_input(
+        "Other Expenses",
+        min_value=0
+    )
+
+    total_expenses = (
+        food +
+        transport +
+        entertainment +
+        education +
+        other_expenses
+    )
+
+    st.error(
+        f"Total Expenses: ₹{total_expenses}"
+    )
+
+    st.subheader("🏦 Savings")
+
+    savings = st.number_input(
+        "Current Savings",
+        min_value=0
+    )
+
+    if st.button("🚀 Analyze Financial Health"):
+
+        features = [[
+            total_income,
+            total_expenses,
+            savings,
+            50000
+        ]]
+
+        probability = (
+            model.predict_proba(
+                features
+            )[0][1]
+            * 100
         )
-    else:
-        months = -1
 
-    if income > 0:
-        score = int(
-            max(
-                0,
-                min(
-                    100,
-                    (surplus / income) * 100
+        surplus = (
+            total_income -
+            total_expenses
+        )
+
+        if total_income > 0:
+
+            score = int(
+                max(
+                    0,
+                    min(
+                        100,
+                        (surplus /
+                         total_income)
+                        * 100
+                    )
                 )
             )
-        )
-    else:
-        score = 0
 
-    st.markdown("---")
+        else:
+            score = 0
 
-    # Metrics
+        st.divider()
 
-    c1, c2, c3 = st.columns(3)
+        c1,c2,c3 = st.columns(3)
 
-    with c1:
-        st.metric(
+        c1.metric(
             "💚 Health Score",
             f"{score}/100"
         )
 
-    with c2:
-        st.metric(
-            "🎯 Success Chance",
+        c2.metric(
+            "💰 Monthly Surplus",
+            f"₹{surplus}"
+        )
+
+        c3.metric(
+            "🎯 Success Index",
             f"{probability:.1f}%"
         )
 
-    with c3:
-        if months >= 0:
+        if score >= 75:
+
+            st.success(
+                "Excellent Financial Health"
+            )
+
+        elif score >= 50:
+
+            st.warning(
+                "Average Financial Health"
+            )
+
+        else:
+
+            st.error(
+                "Needs Improvement"
+            )
+
+# ==================================================
+# DREAM VAULT PAGE
+# ==================================================
+
+elif page == "🎯 Dream Vault":
+
+    st.header("🎯 Dream Vault")
+
+    dream_name = st.text_input(
+        "Dream Name"
+    )
+
+    dream_cost = st.number_input(
+        "Dream Cost (₹)",
+        min_value=0
+    )
+
+    current_savings = st.number_input(
+        "Savings Available (₹)",
+        min_value=0
+    )
+
+    monthly_saving = st.number_input(
+        "Monthly Saving Amount (₹)",
+        min_value=0
+    )
+
+    if st.button("✨ Analyze Dream"):
+
+        if monthly_saving > 0:
+
+            months = (
+                max(
+                    0,
+                    dream_cost -
+                    current_savings
+                )
+                /
+                monthly_saving
+            )
+
+            progress = (
+                current_savings /
+                max(dream_cost,1)
+            ) * 100
+
             st.metric(
                 "⏳ Months Needed",
                 f"{months:.1f}"
             )
-        else:
-            st.metric(
-                "⏳ Months Needed",
-                "∞"
+
+            st.progress(
+                min(
+                    int(progress),
+                    100
+                )
             )
 
-    st.markdown("### 📈 Dream Progress")
+            st.write(
+                f"Progress: {progress:.1f}%"
+            )
 
-    progress = (
-        savings /
-        max(goal_cost,1)
-    ) * 100
+            if months <= 3:
 
-    st.progress(
-        min(
-            int(progress),
-            100
-        )
-    )
+                st.success(
+                    f"You can achieve {dream_name} very soon!"
+                )
 
-    st.write(
-        f"Progress: {min(progress,100):.1f}%"
-    )
+            elif months <= 12:
 
-    st.markdown("---")
+                st.warning(
+                    f"{dream_name} is achievable within a year."
+                )
 
-    # Prediction
+            else:
 
-    if prediction == 1:
+                st.error(
+                    f"{dream_name} needs long-term planning."
+                )
 
-        st.success(
-            f"🎉 FinCheck predicts a HIGH chance of achieving {goal_name}"
-        )
+        else:
 
-    else:
+            st.error(
+                "Monthly saving must be greater than zero."
+            )
 
-        st.error(
-            f"⚠️ FinCheck predicts difficulty achieving {goal_name}"
-        )
-
-    # Advice
-
-    st.markdown("### 🤖 AI Recommendation")
-
-    if probability >= 80:
-
-        st.success(
-            "Excellent! Continue your current savings strategy."
-        )
-
-    elif probability >= 50:
-
-        st.warning(
-            "You are on track, but reducing expenses could help reach your goal faster."
-        )
-
-    else:
-
-        st.error(
-            "Consider lowering expenses or increasing income to improve your chances."
-        )
-
-st.markdown("---")
-st.caption("Built with ❤️ using Streamlit & Machine Learning")
+st.divider()
+st.caption("💰 FinCheck ")

@@ -233,6 +233,7 @@ analyze = st.button("🚀 Analyze")
 
 # ---------------- RESULTS ----------------
 
+```python
 if analyze:
 
     features = [[
@@ -252,18 +253,18 @@ if analyze:
     surplus = income - expenses
 
     remaining_amount = max(
-    0,
-    goal_cost - savings
-)
+        0,
+        goal_cost - savings
+    )
 
-required_daily_saving = (
-    remaining_amount /
-    max(target_days, 1)
-)
+    required_daily_saving = (
+        remaining_amount /
+        max(target_days, 1)
+    )
 
-required_weekly_saving = (
-    required_daily_saving * 7
-)
+    required_weekly_saving = (
+        required_daily_saving * 7
+    )
 
     if surplus > 0:
 
@@ -271,20 +272,9 @@ required_weekly_saving = (
             remaining_amount / surplus
         ) * 30
 
-        daily_saving_needed = (
-            remaining_amount /
-            max(days_needed, 1)
-        )
-
-        weekly_saving_needed = (
-            daily_saving_needed * 7
-        )
-
     else:
 
         days_needed = -1
-        daily_saving_needed = 0
-        weekly_saving_needed = 0
 
     if income > 0:
 
@@ -321,50 +311,55 @@ required_weekly_saving = (
     with c3:
         if days_needed >= 0:
             st.metric(
-                "📅 Days Needed",
+                "📅 Predicted Days",
                 f"{days_needed:.0f}"
             )
         else:
             st.metric(
-                "📅 Days Needed",
+                "📅 Predicted Days",
                 "∞"
             )
-st.markdown("### 💰 Savings Plan")
 
-c4, c5, c6 = st.columns(3)
+    st.markdown("### 💰 Savings Plan")
 
-with c4:
-    st.metric(
-        "Daily Target",
-        f"₹{required_daily_saving:.0f}"
-    )
+    c4, c5, c6 = st.columns(3)
 
-with c5:
-    st.metric(
-        "Weekly Target",
-        f"₹{required_weekly_saving:.0f}"
-    )
+    with c4:
+        st.metric(
+            "Daily Target",
+            f"₹{required_daily_saving:.0f}"
+        )
 
-with c6:
-    st.metric(
-        "Remaining Amount",
-        f"₹{remaining_amount:,.0f}"
-    )
+    with c5:
+        st.metric(
+            "Weekly Target",
+            f"₹{required_weekly_saving:.0f}"
+        )
+
+    with c6:
+        st.metric(
+            "Remaining Amount",
+            f"₹{remaining_amount:,.0f}"
+        )
+
     st.markdown("### 🎯 Goal Feasibility")
 
-monthly_required = required_daily_saving * 30
-
-if surplus >= monthly_required:
-
-    st.success(
-        f"✅ You can realistically achieve {goal_name} within {target_days} days."
+    monthly_required = (
+        required_daily_saving * 30
     )
 
-else:
+    if surplus >= monthly_required:
 
-    st.error(
-        f"❌ Based on your current finances, achieving {goal_name} within {target_days} days may be difficult."
-    )
+        st.success(
+            f"✅ You can realistically achieve {goal_name} within {target_days} days."
+        )
+
+    else:
+
+        st.error(
+            f"❌ Based on your current finances, achieving {goal_name} within {target_days} days may be difficult."
+        )
+
     st.markdown("### 📈 Dream Progress")
 
     progress = (
@@ -399,8 +394,8 @@ else:
 
     st.markdown("### 🤖 AI Recommendation")
 
-   st.info(
-    f"""
+    st.info(
+        f'''
 Dream: {goal_name}
 
 Target Time: {target_days} days
@@ -412,8 +407,8 @@ Daily Saving Needed: ₹{required_daily_saving:.0f}
 Weekly Saving Needed: ₹{required_weekly_saving:.0f}
 
 Remaining Amount: ₹{remaining_amount:,.0f}
-"""
-)
+'''
+    )
 
     if probability >= 80:
 
@@ -438,3 +433,4 @@ st.markdown("---")
 st.caption(
     "💰 FinCheck AI | Machine Learning Powered Financial Goal Planner"
 )
+```

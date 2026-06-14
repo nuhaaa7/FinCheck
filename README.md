@@ -86,51 +86,33 @@ Algorithm Used: Random Forest Classifier
 * Public Web Application
 
 =>Architecture Flow Diagram
-┌─────────────────────┐
-│      User Input     │
-│─────────────────────│
-│ Income              │
-│ Expenses            │
-│ Savings             │
-│ Goal Cost           │
-│ Target Days         │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│   FinCheck AI App   │
-│     (Streamlit)     │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│ Random Forest Model │
-│     (model.pkl)     │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│ ML Prediction Layer │
-│─────────────────────│
-│ Success Probability │
-│ Goal Feasibility    │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│ Financial Analytics │
-│─────────────────────│
-│ Health Score        │
-│ Predicted Days      │
-│ Daily Target        │
-│ Weekly Target       │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│ Interactive Results │
-│ Dashboard           │
-└─────────────────────┘
+    subgraph Input["User Inputs"]
+        A1[Income]
+        A2[Expenses]
+        A3[Savings]
+        A4[Goal Cost]
+        A5[Target Days]
+    end
+    subgraph Processing["Processing Layer"]
+        B1[FinCheck AI App<br/>Streamlit]
+        B2[Random Forest Classifier<br/>model.pkl]
+        B3[ML Prediction Layer]
+    end
+    subgraph Output["Prediction & Analytics"]
+        C1[Success Probability]
+        C2[Goal Feasibility]
+        C3[Financial Analytics]
+        C4[Health Score]
+        C5[Predicted Days]
+        C6[Daily Target]
+        C7[Weekly Target]
+        C8[Interactive Dashboard]
+    end
+    Input --> B1
+    B1 --> B2
+    B2 --> B3
+    B3 --> Output
+
 
 => Project Description 
 FinCheck AI is a Machine Learning-powered financial planning platform that predicts a user's likelihood of achieving financial goals and generates personalized savings plans. Using a Random Forest Classifier trained on 5,000 financial scenarios, the system analyzes income, expenses, savings, and goal cost to provide success probability, financial health insights, and actionable daily and weekly savings recommendations.
